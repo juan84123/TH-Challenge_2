@@ -1,9 +1,12 @@
-import socket
-import threading
+import socket #permite crear comunicación entre computadoras (cliente-servidor).
+import threading #permite manejar múltiples clientes al mismo tiempo (concurrencia).
 
-HOST = "127.0.0.1" #localhost ver que es especificacmente 
+#localhost: Dirección de loopback que permite que la comunicación no salga de mi propia tarjeta de red
+HOST = "127.0.0.1" 
 PORT = 55555
 
+#Permite reutilizar el puerto aunque esté en estado TIME_WAIT.
+#cuando reinicias el servidor rápido.
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 """server.setsockopt(...): Significa "Set Socket Option" (Configurar opción del socket). 
@@ -39,20 +42,20 @@ def cliente_desconectado(cliente_socket):
         # Avisamos a los demás
         """"Usamos UTF-8 porque es el estándar universal de codificación. Nos permite manejar caracteres especiales, 
             acentos y símbolos de cualquier idioma, asegurando que los bytes que viajan por el socket se traduzcan 
-            correctamente en cualquier computadora, sin importar su configuración regional.""""
+            correctamente en cualquier computadora, sin importar su configuración regional."""""
         mensaje_desconexion = f"Server: {nombre_cliente} se ha desconectado".encode('utf-8')
         broadcast(mensaje_desconexion, cliente_socket)
 
-        # Se borra el usuario
+        # Se borra el usuario del diccionario
         del clientes_dict[cliente_socket]
+        # Cierra la conexión
         cliente_socket.close()        
-
         print(f"{nombre_cliente} se ha deconectado")
 
 def handle_message(cliente):
     while True:
         try:
-            mensaje = cliente.recv(1024) # bytes del mensaje, el peso maximo
+            mensaje = cliente.recv(1024) # bytes del mensaje, tamaño de buffer estandar
             broadcast(mensaje, cliente)
         except:
             cliente_desconectado(cliente)
@@ -60,7 +63,7 @@ def handle_message(cliente):
 
 def coneccion_recibida():
     while True:
-        #Retorna una tupla (conn, address), conn es un nuevo objeto socket
+        #Retorna una tupla (cliente_socket (socket del cliente), address(IP y puerto del cliente)), cliente_socket es un nuevo objeto socket
         cliente_socket, addres = server.accept()
 
         # Protocolo de nombre
@@ -69,15 +72,18 @@ def coneccion_recibida():
 
         # Se guarda en el diccionario
         clientes_dict[cliente_socket] = nombre_cliente
-   
+
         print(f"{nombre_cliente} se ha conectado...{addres}")
         mensaje = f"Server: {nombre_cliente} se ha unido al chat!".encode("utf-8")
         broadcast(mensaje, cliente_socket)
 
         cliente_socket.send("Te conectaste al servidor". encode("utf-8"))
 
-        #Iniciamos el hilo, crea una funcion por cada usuario conectado, target dice cual es la funcion que se va a crear por cada usuario y args es argumentos que necesita la funcion
+        #Crea el hilo, crea una funcion por cada usuario conectado, target dice cual es la funcion que se va a crear por cada usuario y args es argumentos que necesita la funcion
         thread = threading.Thread(target=handle_message, args=(cliente_socket,)) 
+        # Si el servidor se apaga, los hilos de clientes mueren
+        thread.daemon = True
+        #Inicia el hilo
         thread.start()
 
 coneccion_recibida()
