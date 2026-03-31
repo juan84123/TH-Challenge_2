@@ -1,24 +1,21 @@
 1. Escenario & Reto
+    Era una tarde normal. Vos, sentado, pensabas que el mundo estaba en paz.
+    Hasta que…
+    todo se cayó. 🫠
+    Literalmente.
+    Redes globales: fuera de servicio.
+    Wi-Fi: desaparecido.
+    Slack: en coma.
+    Solo un mensaje parpadeaba en tu pantalla negra:
 
-Era una tarde normal. Vos, sentado, pensabas que el mundo estaba en paz.
+        "El mundo ha olvidado cómo hablar. Solo vos podés reescribir el protocolo.
+        Bienvenido al Challenge 4."
 
-Hasta que…
-todo se cayó. 🫠
+    Ahora estás en una misión:
+    reconstruir la comunicación mundial desde cero, como una especie de héroe de red…
+    con menos presupuesto y más bugs.
+    Tu tarea: crear una app de chat en tiempo real con sockets, sin frameworks mágicos, sin bibliotecas de lujo. Solo vos, la terminal, y un servidor que probablemente crashee un par de veces.
 
-Literalmente.
-Redes globales: fuera de servicio.
-Wi-Fi: desaparecido.
-Slack: en coma.
-Solo un mensaje parpadeaba en tu pantalla negra:
-
-    "El mundo ha olvidado cómo hablar. Solo vos podés reescribir el protocolo.
-    Bienvenido al Challenge 4."
-
-Ahora estás en una misión:
-reconstruir la comunicación mundial desde cero, como una especie de héroe de red…
-con menos presupuesto y más bugs.
-
-Tu tarea: crear una app de chat en tiempo real con sockets, sin frameworks mágicos, sin bibliotecas de lujo. Solo vos, la terminal, y un servidor que probablemente crashee un par de veces.
 2. Habilidades que Vas a Necesitar
 
     🧠 Conocimientos básicos de sockets y programación de red.
@@ -33,7 +30,7 @@ Tu tarea: crear una app de chat en tiempo real con sockets, sin frameworks mági
 
 3. Requisitos Obligatorios (Tu Mapa de Supervivencia Digital)
 
-1. Servidor de Chat 🧑‍💻🧑‍💻🧑‍💻
+    1. Servidor de Chat 🧑‍💻🧑‍💻🧑‍💻
 
     Creá un socket de servidor que acepte múltiples conexiones.
 
@@ -43,7 +40,7 @@ Tu tarea: crear una app de chat en tiempo real con sockets, sin frameworks mági
 
     Mantené una lista activa de conexiones. Si alguien se va, borralo con dignidad.
 
-2. Cliente de Chat 🫣
+    2. Cliente de Chat 🫣
 
     Creá un cliente por terminal. No hay interfaz fancy. Solo texto crudo.
 
@@ -53,7 +50,7 @@ Tu tarea: crear una app de chat en tiempo real con sockets, sin frameworks mági
 
     Usá estructuras simples para manejar mensajes. Nada de lujos.
 
-3. Errores y Caos 🌪️
+    3. Errores y Caos 🌪️
 
     Manejá desconexiones inesperadas con elegancia (o al menos sin crashear).
 
@@ -65,37 +62,37 @@ Tu tarea: crear una app de chat en tiempo real con sockets, sin frameworks mági
 
 4. Entregables, Reglas y Bonus Opcionales
 
-Entregables:
+    Entregables:
 
-    Código del servidor y del cliente.
+        Código del servidor y del cliente.
 
-    Un README que responda a estas preguntas:
+        Un README que responda a estas preguntas:
 
-        ¿Quién sos después de este reto?
+            ¿Quién sos después de este reto?
 
-        ¿Cómo sobrevivió tu aplicación?
+            ¿Cómo sobrevivió tu aplicación?
 
-        ¿Qué aprendiste cuando todo se rompió?
+            ¿Qué aprendiste cuando todo se rompió?
 
-Reglas:
+    Reglas:
 
-    Nada de bibliotecas de terceros para manejar sockets.
+        Nada de bibliotecas de terceros para manejar sockets.
 
-    El chat tiene que funcionar con varios clientes al mismo tiempo.
+        El chat tiene que funcionar con varios clientes al mismo tiempo.
 
-    El mensaje tiene que fluir. Si hay lag, no es un chat. Es una carta medieval.
+        El mensaje tiene que fluir. Si hay lag, no es un chat. Es una carta medieval.
 
-Bonus Opcionales (Nivel Hacker):
+    Bonus Opcionales (Nivel Hacker):
 
-    Implementá nombres de usuario para que no todos sean “cliente sin nombre”.
+        Implementá nombres de usuario para que no todos sean “cliente sin nombre”.
 
-    Permití comandos como /exit, /mute, /help.
+        Permití comandos como /exit, /mute, /help.
 
-    Agregá timestamps, porque saber cuándo alguien dijo “JAJA” es importante.
+        Agregá timestamps, porque saber cuándo alguien dijo “JAJA” es importante.
 
-    Logeá los mensajes en un archivo por si necesitás un drama legal.
+        Logeá los mensajes en un archivo por si necesitás un drama legal.
 
-    Hacé una versión que funcione por Wi-Fi local en un café, así podés espiar a todos.
+        Hacé una versión que funcione por Wi-Fi local en un café, así podés espiar a todos.
 
 🚀 ¡Conectá, o callá para siempre!
 En este mundo post-red, no hay Google Meet.

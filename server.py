@@ -1,0 +1,84 @@
+import socket
+import threading
+
+HOST = "127.0.0.1" #localhost ver que es especificacmente 
+PORT = 55555
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+"""server.setsockopt(...): Significa "Set Socket Option" (Configurar opción del socket). 
+Es para cambiar las reglas de juego de ese socket específico.
+
+socket.SOL_SOCKET: Le dice a Python que la configuración que vamos a cambiar es a nivel de Socket general (no algo específico de un protocolo raro).
+
+socket.SO_REUSEADDR: Esta es la clave. Significa "Socket Option: Reuse Address" (Reutilizar dirección). Le da permiso al servidor para "robarle" el puerto al sistema operativo aunque este crea que todavía está ocupado por una conexión anterior.
+
+1: Es un valor booleano (True). Significa "activar esta opción"."""
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server.bind((HOST,PORT))
+server.listen()
+print(f"Server running on {HOST}:{PORT}")
+
+# Diccionario { socket: nombre }
+clientes_dict = {}
+
+def broadcast(mensaje, cliente_actual):
+    for cliente_socket in clientes_dict:
+        if cliente_socket != cliente_actual: #para cuando se envie el mensaje, no se envie tambien al cliente que envio el mensaje
+            try:
+                cliente_socket.send(mensaje)
+            except:
+                # Si falla, aprovechamos para limpiar
+                cliente_desconectado(cliente_socket)
+            
+
+def cliente_desconectado(cliente_socket):
+    if cliente_socket in clientes_dict:
+        nombre_cliente = clientes_dict[cliente_socket]
+
+        # Avisamos a los demás
+        """"Usamos UTF-8 porque es el estándar universal de codificación. Nos permite manejar caracteres especiales, 
+            acentos y símbolos de cualquier idioma, asegurando que los bytes que viajan por el socket se traduzcan 
+            correctamente en cualquier computadora, sin importar su configuración regional.""""
+        mensaje_desconexion = f"Server: {nombre_cliente} se ha desconectado".encode('utf-8')
+        broadcast(mensaje_desconexion, cliente_socket)
+
+        # Se borra el usuario
+        del clientes_dict[cliente_socket]
+        cliente_socket.close()        
+
+        print(f"{nombre_cliente} se ha deconectado")
+
+def handle_message(cliente):
+    while True:
+        try:
+            mensaje = cliente.recv(1024) # bytes del mensaje, el peso maximo
+            broadcast(mensaje, cliente)
+        except:
+            cliente_desconectado(cliente)
+            break
+
+def coneccion_recibida():
+    while True:
+        #Retorna una tupla (conn, address), conn es un nuevo objeto socket
+        cliente_socket, addres = server.accept()
+
+        # Protocolo de nombre
+        cliente_socket.send("nombre".encode("utf-8"))
+        nombre_cliente = cliente_socket.recv(1024).decode("utf-8")
+
+        # Se guarda en el diccionario
+        clientes_dict[cliente_socket] = nombre_cliente
+   
+        print(f"{nombre_cliente} se ha conectado...{addres}")
+        mensaje = f"Server: {nombre_cliente} se ha unido al chat!".encode("utf-8")
+        broadcast(mensaje, cliente_socket)
+
+        cliente_socket.send("Te conectaste al servidor". encode("utf-8"))
+
+        #Iniciamos el hilo, crea una funcion por cada usuario conectado, target dice cual es la funcion que se va a crear por cada usuario y args es argumentos que necesita la funcion
+        thread = threading.Thread(target=handle_message, args=(cliente_socket,)) 
+        thread.start()
+
+coneccion_recibida()
+
