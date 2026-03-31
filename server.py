@@ -5,8 +5,7 @@ import threading #permite manejar múltiples clientes al mismo tiempo (concurren
 HOST = "127.0.0.1" 
 PORT = 55555
 
-#Permite reutilizar el puerto aunque esté en estado TIME_WAIT.
-#cuando reinicias el servidor rápido.
+#Definimos la familia de direcciones (IPv4) y el tipo de socket (TCP).
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 """server.setsockopt(...): Significa "Set Socket Option" (Configurar opción del socket). 
@@ -17,12 +16,20 @@ socket.SOL_SOCKET: Le dice a Python que la configuración que vamos a cambiar es
 socket.SO_REUSEADDR: Esta es la clave. Significa "Socket Option: Reuse Address" (Reutilizar dirección). Le da permiso al servidor para "robarle" el puerto al sistema operativo aunque este crea que todavía está ocupado por una conexión anterior.
 
 1: Es un valor booleano (True). Significa "activar esta opción"."""
+#Permite reutilizar el puerto aunque esté en estado TIME_WAIT.
+#cuando reinicias el servidor rápido.
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+#Asocia el socket a una interfaz de red específica (localhost) y un puerto.
 server.bind((HOST,PORT))
+#Pone el socket en modo escucha
 server.listen()
 print(f"Server running on {HOST}:{PORT}")
 
 # Diccionario { socket: nombre }
+# La clave es un objeto de la clase socket
+"""Este objeto es un paquete que contiene:
+Atributos (Datos): El fd (File Descriptor), la IP del cliente, el puerto que está usando, el protocolo (TCP), etc.
+Métodos (Funciones): Las capacidades de ese objeto, como .send(), .recv() o .close()."""
 clientes_dict = {}
 
 def broadcast(mensaje, cliente_actual):
@@ -63,7 +70,8 @@ def handle_message(cliente):
 
 def coneccion_recibida():
     while True:
-        #Retorna una tupla (cliente_socket (socket del cliente), address(IP y puerto del cliente)), cliente_socket es un nuevo objeto socket
+        #Retorna una tupla (cliente_socket (socket del cliente), address(IP y puerto del cliente)), 
+        # cliente_socket es un nuevo objeto socket, se genera el Three-way Handshake
         cliente_socket, addres = server.accept()
 
         # Protocolo de nombre
@@ -79,7 +87,9 @@ def coneccion_recibida():
 
         cliente_socket.send("Te conectaste al servidor". encode("utf-8"))
 
-        #Crea el hilo, crea una funcion por cada usuario conectado, target dice cual es la funcion que se va a crear por cada usuario y args es argumentos que necesita la funcion
+        #Crea el hilo, hilo de ejecución independiente para cada cliente, 
+        # target dice cual es la funcion que se va a crear por cada usuario y 
+        # args es argumentos que necesita la funcion
         thread = threading.Thread(target=handle_message, args=(cliente_socket,)) 
         # Si el servidor se apaga, los hilos de clientes mueren
         thread.daemon = True
